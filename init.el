@@ -53,7 +53,9 @@
 (use-package magit
 :config
 (with-eval-after-load 'magit-mode
-    (add-hook 'after-save-hook 'magit-after-save-refresh-status t)))
+  (add-hook 'after-save-hook 'magit-after-save-refresh-status t))
+(setq magit-status-buffer-switch-function
+      #'magit-display-buffer-same-window-except-diff-v1))
 (use-package treemacs
   :defer t
   :init
@@ -172,6 +174,19 @@
    ("j" shrink-window)
    ("k" enlarge-window)
    ("q" nil "cancel")))
+; Autosave current session
+(desktop-save-mode 1)
+(cua-mode)
+(setq desktop-restore-frames t)
+(setq desktop-restore-forces-onscreen nil)
+(add-hook 'desktop-after-read-hook
+ (lambda ()
+   (frameset-restore
+    desktop-saved-frameset
+    :reuse-frames (eq desktop-restore-reuses-frames t)
+    :cleanup-frames (not (eq desktop-restore-reuses-frames 'keep))
+    :force-display desktop-restore-in-current-display
+    :force-onscreen desktop-restore-forces-onscreen)))
 
 ;; SECTION: SETTINGS FROM EMACS CUSTOMIZE
 (put 'upcase-region 'disabled nil)

@@ -4,3 +4,5 @@ elpa/
 url/
 transient/
 *~*
+.emacs.desktop
+*.lock
