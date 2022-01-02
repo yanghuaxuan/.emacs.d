@@ -6,22 +6,6 @@
 ; Enable use-package
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (add-to-list 'package-archives '("elpa" . "https://elpa.gnu.org/packages/"))
-; Ensure that packages.el marks these packages as installed
-(setq package-selected-packages
-      '(use-package
-	 evil
-	 cl-lib
-	 use-package
-	 evil-collection
-	 which-key
-	 doom-themes
-	 doom-modeline
-	 all-the-icons
-	 magit
-	 treemacs
-	 treemacs-evil
-	 treemacs-all-the-icons
-	 treemacs-magit hydra))
 (when (not (package-installed-p 'use-package))
   (package-refresh-contents)
   (package-install 'use-package))
