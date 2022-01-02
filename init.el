@@ -23,24 +23,30 @@
   :config
   (evil-collection-init))
 (use-package which-key
+  :ensure t
   :config
   (which-key-mode 1))
 (use-package doom-themes
+  :ensure t
   :config
   (setq doom-themes-enable-bold t
 	doom-themes-enable-italic t))
 (use-package doom-modeline
+  :ensure t
   :config
   (doom-modeline-mode 1))
 (use-package all-the-icons
+  :ensure t
   :if (display-graphic-p))
 (use-package magit
-:config
-(with-eval-after-load 'magit-mode
-  (add-hook 'after-save-hook 'magit-after-save-refresh-status t))
-(setq magit-status-buffer-switch-function
-      #'magit-display-buffer-same-window-except-diff-v1))
+  :ensure t
+  :config
+  (with-eval-after-load 'magit-mode
+    (add-hook 'after-save-hook 'magit-after-save-refresh-status t))
+  (setq magit-status-buffer-switch-function
+	#'magit-display-buffer-same-window-except-diff-v1))
 (use-package treemacs
+  :ensure t
   :defer t
   :init
   (with-eval-after-load 'winum
@@ -122,15 +128,19 @@
         ("C-x t C-t" . treemacs-find-file)
         ("C-x t M-t" . treemacs-find-tag)))
 (use-package treemacs-all-the-icons
+  :ensure t
   :config (treemacs-load-theme "all-the-icons"))
 (use-package treemacs-evil
+  :ensure t
   :after (treemacs evil))
 (use-package treemacs-icons-dired
   :ensure t
   :hook (dired-mode . treemacs-icons-dired-enable-once))
 (use-package treemacs-magit
+  :ensure t
   :after (treemacs magit))
-(use-package hydra)
+(use-package hydra
+  :ensure t)
 (use-package company
   :ensure t
   :config
