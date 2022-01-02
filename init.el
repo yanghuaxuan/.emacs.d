@@ -126,12 +126,34 @@
 (use-package treemacs-evil
   :after (treemacs evil))
 (use-package treemacs-icons-dired
+  :ensure t
   :hook (dired-mode . treemacs-icons-dired-enable-once))
 (use-package treemacs-magit
   :after (treemacs magit))
 (use-package hydra)
-
-  
+(use-package company
+  :ensure t
+  :config
+  (company-mode))
+(use-package lsp-mode
+  :ensure t
+  :init
+  (setq lsp-keymap-prefix "C-c l")
+  :hook
+  ((lsp-mode . lsp-enable-which-key-integration))
+  :commands lsp)
+(use-package lsp-ui
+  :ensure t
+  :commands lsp-ui-mode)
+(use-package lsp-treemacs
+  :ensure t
+  :commands lsp-treemacs-errors-list)
+(use-package typescript-mode
+  :ensure t
+  :mode "\\.ts\\'"
+  :hook (typescript-mode . lsp-deferred)
+  :config
+  (setq typescript-indent-level 4))
 
 ;; SECTION: MISC CONFIG
 ; Most configs are part of the packages section. This is for config that I prefer would be here instead
@@ -161,16 +183,6 @@
 ; Autosave current session
 (desktop-save-mode 1)
 (cua-mode)
-(setq desktop-restore-frames t)
-(setq desktop-restore-forces-onscreen nil)
-(add-hook 'desktop-after-read-hook
- (lambda ()
-   (frameset-restore
-    desktop-saved-frameset
-    :reuse-frames (eq desktop-restore-reuses-frames t)
-    :cleanup-frames (not (eq desktop-restore-reuses-frames 'keep))
-    :force-display desktop-restore-in-current-display
-    :force-onscreen desktop-restore-forces-onscreen)))
 
 ;; SECTION: SETTINGS FROM EMACS CUSTOMIZE
 (put 'upcase-region 'disabled nil)
