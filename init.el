@@ -34,6 +34,7 @@
 (use-package doom-modeline
   :ensure t
   :config
+  (setq doom-modeline-height 35)
   (doom-modeline-mode 1))
 (use-package all-the-icons
   :ensure t
@@ -192,7 +193,11 @@
    ("q" nil "cancel")))
 ; Autosave current session
 (desktop-save-mode 1)
+; Enable CUA (Global copy-paste)
 (cua-mode)
+; Relative line numbers
+(setq display-line-numbers-type 'relative)
+(global-display-line-numbers-mode 1)
 
 ;; SECTION: SETTINGS FROM EMACS CUSTOMIZE
 (put 'upcase-region 'disabled nil)
