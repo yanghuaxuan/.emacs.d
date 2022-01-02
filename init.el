@@ -147,7 +147,7 @@
 ; Disable scroll bar
 (scroll-bar-mode -1)
 ; Set font
-(add-to-list 'default-frame-alist '(font . "Terminus"))
+(add-to-list 'default-frame-alist '(font . "JetBrainsMono-Regular"))
 ; Summon the hydra
 (global-set-key
  (kbd "C-M-o")
