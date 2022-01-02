@@ -1,12 +1,33 @@
 (setq warning-suppress-types '('(el)))
+(require 'cl-lib)
 ;; SECTION: PACKAGES
-
+; Import package.el
+(require 'package)
 ; Enable use-package
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (add-to-list 'package-archives '("elpa" . "https://elpa.gnu.org/packages/"))
+; Ensure that packages.el marks these packages as installed
+(setq package-selected-packages
+      '(use-package
+	 evil
+	 cl-lib
+	 use-package
+	 evil-collection
+	 which-key
+	 doom-themes
+	 doom-modeline
+	 all-the-icons
+	 magit
+	 treemacs
+	 treemacs-evil
+	 treemacs-all-the-icons
+	 treemacs-magit hydra))
+(when (not (package-installed-p 'use-package))
+  (package-refresh-contents)
+  (package-install 'use-package))
+; Use-package config
 (eval-when-compile
   (require 'use-package))
-; Packages 
 (use-package evil
   :ensure t
   :init
@@ -15,31 +36,25 @@
   :config (evil-mode 1))
 (use-package evil-collection
   :after evil
-  :ensure t
   :config
   (evil-collection-init))
 (use-package which-key
-  :ensure t
   :config
   (which-key-mode 1))
 (use-package doom-themes
-  :ensure t
   :config
   (setq doom-themes-enable-bold t
 	doom-themes-enable-italic t))
 (use-package doom-modeline
-  :ensure t
   :config
   (doom-modeline-mode 1))
 (use-package all-the-icons
   :if (display-graphic-p))
 (use-package magit
-:ensure t
 :config
 (with-eval-after-load 'magit-mode
     (add-hook 'after-save-hook 'magit-after-save-refresh-status t)))
 (use-package treemacs
-  :ensure t
   :defer t
   :init
   (with-eval-after-load 'winum
@@ -121,22 +136,14 @@
         ("C-x t C-t" . treemacs-find-file)
         ("C-x t M-t" . treemacs-find-tag)))
 (use-package treemacs-all-the-icons
-  :ensure t
   :config (treemacs-load-theme "all-the-icons"))
 (use-package treemacs-evil
-  :after (treemacs evil)
-  :ensure t)
-(use-package treemacs-projectile
-  :after (treemacs projectile)
-  :ensure t)
+  :after (treemacs evil))
 (use-package treemacs-icons-dired
-  :hook (dired-mode . treemacs-icons-dired-enable-once)
-  :ensure t)
+  :hook (dired-mode . treemacs-icons-dired-enable-once))
 (use-package treemacs-magit
-  :ensure t
   :after (treemacs magit))
-(use-package hydra
-  :ensure t)
+(use-package hydra)
 
   
 
@@ -147,7 +154,7 @@
 ; Disable scroll bar
 (scroll-bar-mode -1)
 ; Set font
-(add-to-list 'default-frame-alist '(font . "JetBrainsMono-Regular"))
+(add-to-list 'default-frame-alist '(font . "JetBrains Mono"))
 ; Summon the hydra
 (global-set-key
  (kbd "C-M-o")
