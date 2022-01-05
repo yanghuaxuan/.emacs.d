@@ -37,7 +37,8 @@
 (use-package which-key
   :straight t
   :config
-  (which-key-mode 1))
+  (which-key-mode 1)
+  (which-key-setup-minibuffer)
 (use-package doom-themes
   :straight t
   :config
@@ -184,6 +185,8 @@
   :config
   (require 'evil-org-agenda)
   (evil-org-agenda-set-keys))
+(use-package origami
+  :straight t)
     
 
 ;; SECTION: MISC CONFIG
