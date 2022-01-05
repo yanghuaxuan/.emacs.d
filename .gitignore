@@ -7,3 +7,5 @@ transient/
 .emacs.desktop
 *.lock
 /.lsp-session-v1
+/startup/
+/straight/

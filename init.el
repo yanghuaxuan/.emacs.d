@@ -1,53 +1,62 @@
 (setq warning-suppress-types '('(el)))
 (require 'cl-lib)
 ;; SECTION: PACKAGES
-; Import package.el
-(require 'package)
+;; Use straight.el
+(defvar bootstrap-version)
+(let ((bootstrap-file
+	       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+            (bootstrap-version 5))
+    (unless (file-exists-p bootstrap-file)
+          (with-current-buffer
+	            (url-retrieve-synchronously
+		               "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+			                'silent 'inhibit-cookies)
+		          (goto-char (point-max))
+			        (eval-print-last-sexp)))
+      (load bootstrap-file nil 'nomessage))
+
 ; Enable use-package
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-(add-to-list 'package-archives '("elpa" . "https://elpa.gnu.org/packages/"))
-(when (not (package-installed-p 'use-package))
-  (package-refresh-contents)
-  (package-install 'use-package))
+(straight-use-package 'use-package)
 ; Use-package config
 (eval-when-compile
   (require 'use-package))
 (use-package evil
-  :ensure t
+  :straight t
   :init
   (setq evil-want-integration t)
   (setq evil-want-keybinding nil)
   :config (evil-mode 1))
 (use-package evil-collection
+  :straight t
   :after evil
   :config
   (evil-collection-init))
 (use-package which-key
-  :ensure t
+  :straight t
   :config
   (which-key-mode 1))
 (use-package doom-themes
-  :ensure t
+  :straight t
   :config
   (setq doom-themes-enable-bold t
 	doom-themes-enable-italic t))
 (use-package doom-modeline
-  :ensure t
+  :straight t
   :config
   (setq doom-modeline-height 35)
   (doom-modeline-mode 1))
 (use-package all-the-icons
-  :ensure t
+  :straight t
   :if (display-graphic-p))
 (use-package magit
-  :ensure t
+  :straight t
   :config
   (with-eval-after-load 'magit-mode
     (add-hook 'after-save-hook 'magit-after-save-refresh-status t))
   (setq magit-status-buffer-switch-function
 	#'magit-display-buffer-same-window-except-diff-v1))
 (use-package treemacs
-  :ensure t
+  :straight t
   :defer t
   :init
   (with-eval-after-load 'winum
@@ -129,42 +138,50 @@
         ("C-x t C-t" . treemacs-find-file)
         ("C-x t M-t" . treemacs-find-tag)))
 (use-package treemacs-all-the-icons
-  :ensure t
+  :straight t
   :config (treemacs-load-theme "all-the-icons"))
 (use-package treemacs-evil
-  :ensure t
+  :straight t
   :after (treemacs evil))
 (use-package treemacs-icons-dired
-  :ensure t
+  :straight t
   :hook (dired-mode . treemacs-icons-dired-enable-once))
 (use-package treemacs-magit
-  :ensure t
+  :straight t
   :after (treemacs magit))
-(use-package hydra
-  :ensure t)
+(use-package hydra)
+  :straight t
 (use-package company
-  :ensure t
+  :straight t
   :config
   (company-mode))
 (use-package lsp-mode
-  :ensure t
+  :straight t
   :init
   (setq lsp-keymap-prefix "C-c l")
   :hook
   ((lsp-mode . lsp-enable-which-key-integration))
   :commands lsp)
 (use-package lsp-ui
-  :ensure t
+  :straight t
   :commands lsp-ui-mode)
 (use-package lsp-treemacs
-  :ensure t
+  :straight t
   :commands lsp-treemacs-errors-list)
 (use-package typescript-mode
-  :ensure t
+  :straight t
   :mode "\\.ts\\'"
   :hook (typescript-mode . lsp-deferred)
   :config
   (setq typescript-indent-level 4))
+(use-package evil-org
+  :straight t
+  :after org
+  :hook (org-mode . (lambda () evil-org-mode))
+  :config
+  (require 'evil-org-agenda)
+  (evil-org-agenda-set-keys))
+    
 
 ;; SECTION: MISC CONFIG
 ; Most configs are part of the packages section. This is for config that I prefer would be here instead
@@ -174,9 +191,10 @@
 (scroll-bar-mode -1)
 ; Set font
 (add-to-list 'default-frame-alist '(font . "JetBrains Mono"))
+;; Prettify? TODO
 ; Summon the hydra
 (global-set-key
- (kbd "C-M-o")
+ (kbd "M-w")
  (defhydra hydra-window () "Move around windows with hydra and vi binds"
    ("h" windmove-left)
    ("l" windmove-right)
@@ -191,13 +209,15 @@
    ("j" shrink-window)
    ("k" enlarge-window)
    ("q" nil "cancel")))
-; Autosave current session
-(desktop-save-mode 1)
 ; Enable CUA (Global copy-paste)
 (cua-mode)
 ; Relative line numbers
 (setq display-line-numbers-type 'relative)
 (global-display-line-numbers-mode 1)
+; Set startup screen
+(setq initial-buffer-choice (lambda () get-buffer-create "*dashboard*"))
+; Disable auto-save
+(setq auto-save-default nil)
 
 ;; SECTION: SETTINGS FROM EMACS CUSTOMIZE
 (put 'upcase-region 'disabled nil)
@@ -209,7 +229,7 @@
  '(custom-safe-themes
    '("7a7b1d475b42c1a0b61f3b1d1225dd249ffa1abb1b7f726aec59ac7ca3bf4dae" "d47f868fd34613bd1fc11721fe055f26fd163426a299d45ce69bef1f109e1e71" "fb3edc31220f6ffa986dbbb184c45c7684e0c4e04fbd6ea44a33cc52291c3894" "82e799bb68717f8cafe76263134e32e1e142add3563e49099927d517a39478d0" default))
  '(menu-bar-mode nil)
- '(package-selected-packages '(use-package ##))
+ '(package-selected-packages '(gigs-splash evil-org use-package ##))
  '(tool-bar-mode nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
