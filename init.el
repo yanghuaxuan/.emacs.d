@@ -208,7 +208,7 @@
 ;; Prettify? TODO
 ; Summon the hydra
 (global-set-key
- (kbd "M-w")
+ (kbd "C-M-W")
  (defhydra hydra-window () "Move around windows with hydra and vi binds"
    ("h" windmove-left)
    ("l" windmove-right)
