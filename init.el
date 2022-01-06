@@ -38,17 +38,17 @@
   :straight t
   :config
   (which-key-mode 1)
-  (which-key-setup-minibuffer)
+  (which-key-setup-minibuffer))
 (use-package doom-themes
   :straight t
   :config
   (setq doom-themes-enable-bold t
 	doom-themes-enable-italic t))
-(use-package doom-modeline
-  :straight t
-  :config
-  (setq doom-modeline-height 35)
-  (doom-modeline-mode 1))
+;(use-package doom-modeline
+;  :straight t
+;  :config
+;  (setq doom-modeline-height 35)
+;  (doom-modeline-mode 1))
 (use-package all-the-icons
   :straight t
   :if (display-graphic-p))
@@ -187,9 +187,17 @@
   (evil-org-agenda-set-keys))
 (use-package origami
   :straight t)
+(use-package ivy
+  :straight t
+  :config
+  (ivy-mode))
+(use-package nano-modeline
+  :straight t
+  :config
+  (nano-modeline))
     
 
-;; SECTION: MISC CONFIG
+;; section: MISC CONFIG
 ; Most configs are part of the packages section. This is for config that I prefer would be here instead
 ; Load theme
 (load-theme 'doom-city-lights t)
@@ -242,5 +250,22 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(mode-line ((t nil)))
+ '(mode-line-buffer-id ((t nil)))
+ '(mode-line-emphasis ((t nil)))
+ '(mode-line-highlight ((t nil)))
+ '(nano-modeline-active ((t nil)))
+ '(nano-modeline-active-name ((t nil)))
+ '(nano-modeline-active-primary ((t nil)))
+ '(nano-modeline-active-secondary ((t nil)))
+ '(nano-modeline-active-status-** ((t nil)))
+ '(nano-modeline-active-status-RO ((t (:background "dark red"))))
+ '(nano-modeline-active-status-RW ((t (:background "black"))))
+ '(nano-modeline-inactive ((t nil)))
+ '(nano-modeline-inactive-name ((t nil)))
+ '(nano-modeline-inactive-primary ((t nil)))
+ '(nano-modeline-inactive-secondary ((t nil)))
+ '(nano-modeline-inactive-status-** ((t nil)))
+ '(nano-modeline-inactive-status-RO ((t nil)))
+ '(nano-modeline-inactive-status-RW ((t nil))))
 
