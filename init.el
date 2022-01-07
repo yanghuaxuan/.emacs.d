@@ -4,7 +4,7 @@
 (setq warning-suppress-types '('(el)))
 (require 'cl-lib)
 ;; SECTION: PACKAGES
-;; Use straight.el
+;; use straight.el
 (defvar bootstrap-version)
 (let ((bootstrap-file
 	       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -216,7 +216,7 @@
    ("k" windmove-up)
    ("q" nil "cancel")))
 (global-set-key
- (kbd "C-M-l")
+ (kbd "C-M-R")
  (defhydra hydra-resize () "Resize window"
    ("h" shrink-window-horizontally)
    ("l" enlarge-window-horizontally)
