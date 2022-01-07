@@ -9,3 +9,5 @@ transient/
 /.lsp-session-v1
 /startup/
 /straight/
+/.#init.el
+/projectile-bookmarks.eld
