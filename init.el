@@ -195,6 +195,9 @@
   :straight t
   :config
   (nano-modeline))
+(use-package flycheck
+  :straight t
+  :init (global-flycheck-mode))
     
 
 ;; section: MISC CONFIG
