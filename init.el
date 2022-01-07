@@ -18,11 +18,10 @@
 			        (eval-print-last-sexp)))
       (load bootstrap-file nil 'nomessage))
 
-; Enable use-package
-(straight-use-package 'use-package)
+					; Enable use-package
 ; Use-package config
 (eval-when-compile
-  (require 'use-package))
+  (straight-use-package 'use-package))
 (use-package evil
   :straight t
   :init
@@ -199,6 +198,11 @@
   :straight t
   :init (global-flycheck-mode)
   :config (add-hook 'after-init-hook' #'global-flycheck-mode))
+(use-package projectile
+  :straight t
+  :config
+  (projectile-mode +1)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
     
 
 ;; section: MISC CONFIG
@@ -243,6 +247,7 @@
       delete-old-versions    t  ; Automatically delete excess backups:
       kept-new-versions      20 ; how many of the newest versions to keep
       kept-old-versions      5) ; and how many of the old
+(global-auto-revert-mode t)
 
 ;; SECTION: SETTINGS FROM EMACS CUSTOMIZE
 (put 'upcase-region 'disabled nil)
