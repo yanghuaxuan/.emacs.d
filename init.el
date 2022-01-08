@@ -57,7 +57,8 @@
   (with-eval-after-load 'magit-mode
     (add-hook 'after-save-hook 'magit-after-save-refresh-status t))
   (setq magit-status-buffer-switch-function
-	#'magit-display-buffer-same-window-except-diff-v1))
+	#'magit-display-buffer-same-window-except-diff-v1)
+  (global-set-key (kbd "C-x g") ))
 (use-package treemacs
   :straight t
   :defer t
@@ -141,7 +142,7 @@
         ("C-x t C-t" . treemacs-find-file)
         ("C-x t M-t" . treemacs-find-tag)))
 (use-package treemacs-all-the-icons
-  :straight t
+  :stright t
   :config (treemacs-load-theme "all-the-icons"))
 (use-package treemacs-evil
   :straight t
@@ -186,10 +187,6 @@
   (evil-org-agenda-set-keys))
 (use-package origami
   :straight t)
-(use-package ivy
-  :straight t
-  :config
-  (ivy-mode))
 (use-package nano-modeline
   :straight t
   :config
@@ -203,8 +200,18 @@
   :config
   (projectile-mode +1)
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
+(use-package helm
+  :straight t
+  :config
+  (helm-autoresize-mode 1)
+  (setq
+   helm-split-window-inside-p t
+   helm-autoresize-max-height 40)
+  (global-set-key (kbd "M-x") 'helm-M-x)
+  (global-set-key (kbd "C-x b") 'helm-mini)
+  (global-set-key (kbd "C-x C-f") 'helm-find-files)
+  (global-set-key (kbd "C-h a") 'helm-apropos))
     
-
 ;; section: MISC CONFIG
 ; Most configs are part of the packages section. This is for config that I prefer would be here instead
 ; Load theme
