@@ -2,6 +2,7 @@
 (setq gc-cons-threshold (* 50 1000 1000))
 
 (setq warning-suppress-types '('(el)))
+
 (require 'cl-lib)
 ;; SECTION: PACKAGES
 ;; use straight.el
@@ -43,11 +44,11 @@
   :config
   (setq doom-themes-enable-bold t
 	doom-themes-enable-italic t))
-;(use-package doom-modeline
-;  :straight t
-;  :config
-;  (setq doom-modeline-height 35)
-;  (doom-modeline-mode 1))
+(use-package doom-modeline
+  :straight t
+  :config
+  (setq doom-modeline-height 35)
+  (doom-modeline-mode 1))
 (use-package all-the-icons
   :straight t
   :if (display-graphic-p))
@@ -57,8 +58,7 @@
   (with-eval-after-load 'magit-mode
     (add-hook 'after-save-hook 'magit-after-save-refresh-status t))
   (setq magit-status-buffer-switch-function
-	#'magit-display-buffer-same-window-except-diff-v1)
-  (global-set-key (kbd "C-x g") ))
+	#'magit-display-buffer-same-window-except-diff-v1))
 (use-package treemacs
   :straight t
   :defer t
@@ -142,7 +142,7 @@
         ("C-x t C-t" . treemacs-find-file)
         ("C-x t M-t" . treemacs-find-tag)))
 (use-package treemacs-all-the-icons
-  :stright t
+  :straight t
   :config (treemacs-load-theme "all-the-icons"))
 (use-package treemacs-evil
   :straight t
@@ -187,10 +187,10 @@
   (evil-org-agenda-set-keys))
 (use-package origami
   :straight t)
-(use-package nano-modeline
-  :straight t
-  :config
-  (nano-modeline))
+;(use-package nano-modeline
+;  :straight t
+;  :config
+;  (nano-modeline))
 (use-package flycheck
   :straight t
   :init (global-flycheck-mode)
@@ -204,13 +204,10 @@
   :straight t
   :config
   (helm-autoresize-mode 1)
+  (helm-mode)
   (setq
    helm-split-window-inside-p t
    helm-autoresize-max-height 40)
-  (global-set-key (kbd "M-x") 'helm-M-x)
-  (global-set-key (kbd "C-x b") 'helm-mini)
-  (global-set-key (kbd "C-x C-f") 'helm-find-files)
-  (global-set-key (kbd "C-h a") 'helm-apropos))
    (global-set-key (kbd "M-x") 'helm-M-x)
    (global-set-key (kbd "C-x b") 'helm-mini)
    (global-set-key (kbd "C-x C-f") 'helm-find-files)
@@ -227,6 +224,22 @@
   (dap-mode)
   (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
   (require 'dap-cpptools))
+(use-package org-roam
+  :straight t
+  :custom
+  (org-roam-directory "~/RoamNotes")
+  (org-roam-dailies-directory "dailies/")
+  (org-roam-dailies-capture-templates
+   '(("d" "default" entry
+      "* %?"
+      :target (file+head "%<%Y-%m-%d>.org"
+                         "#+title: %<%Y-%m-%d>\n")))))
+  (org-roam-complete-everywhere t)
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+         ("C-c n f" . org-roam-node-find)
+         ("C-c n i" . org-roam-node-insert))
+  :config
+  (org-roam-setup))
     
 ;; section: MISC CONFIG
 ; Most configs are part of the packages section. This is for config that I prefer would be here instead
@@ -271,6 +284,11 @@
       kept-new-versions      20 ; how many of the newest versions to keep
       kept-old-versions      5) ; and how many of the old
 (global-auto-revert-mode t)
+(setq dired-auto-revert-buffer t)
+(setq-default indent-tabs-mode nil)
+; Bind completions at point
+(global-set-key (kbd "C-M-i") 'completion-at-point)
+
 
 ;; SECTION: SETTINGS FROM EMACS CUSTOMIZE
 (put 'upcase-region 'disabled nil)
