@@ -12,3 +12,7 @@ transient/
 /.#init.el
 /projectile-bookmarks.eld
 /recentf
+/bookmarks
+/.org-id-locations
+/org-roam.db
+/eshell/

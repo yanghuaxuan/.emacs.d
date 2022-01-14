@@ -211,6 +211,22 @@
   (global-set-key (kbd "C-x b") 'helm-mini)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
   (global-set-key (kbd "C-h a") 'helm-apropos))
+   (global-set-key (kbd "M-x") 'helm-M-x)
+   (global-set-key (kbd "C-x b") 'helm-mini)
+   (global-set-key (kbd "C-x C-f") 'helm-find-files)
+   (global-set-key (kbd "C-h a") 'helm-apropos))
+(use-package helm-swoop
+  :straight t
+  :after (helm))
+(use-package helm-ag
+  :straight t
+  :after (helm))
+(use-package dap-mode
+  :straight t
+  :config
+  (dap-mode)
+  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
+  (require 'dap-cpptools))
     
 ;; section: MISC CONFIG
 ; Most configs are part of the packages section. This is for config that I prefer would be here instead
