@@ -305,7 +305,7 @@
 ; Bind completions at point
 (global-set-key (kbd "C-M-i") 'completion-at-point)
 (let* ((agenda-map (make-sparse-keymap)))
-    (define-key agenda-map (kbd "a") 'org-agenda)
+    (define-key agenda-map (kbd "C-a") 'org-agenda)
     (define-key agenda-map (kbd "t") 'goto-todo)
     (global-set-key (kbd "C-a") agenda-map))
 
