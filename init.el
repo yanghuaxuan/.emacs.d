@@ -219,9 +219,12 @@
 (use-package org
   :straight t
   :custom
-  (org-agenda-files '("~/org"))
+  (org-agenda-files '("~/org" "~/RoamNotes"))
   (org-todo-keywords
-   '((sequence "TODO" "IN-PROGRESS" "WAITING" "|" "DONE" "CANCELED"))))
+   '((sequence "TODO(t)" "IN-PROGRESS(p)" "WAITING(w)" "|" "DONE(d)" "CANCELED(c)" "STALLED(s)")))
+  (org-log-done `time)
+  (org-enforce-todo-dependencies t)
+  (org-hide-emphasis-markers t))
 (use-package evil-org
   :straight t
   :after org
@@ -300,13 +303,13 @@
        (split-window-below)
        (find-file (concat user-emacs-directory "init.el")))
 
-(global-set-key (kbd "C-c C-c") 'goto-config)
+(global-set-key (kbd "C-c c") 'goto-config)
 
 ; Bind completions at point
 (global-set-key (kbd "C-M-i") 'completion-at-point)
 (let* ((agenda-map (make-sparse-keymap)))
     (define-key agenda-map (kbd "C-a") 'org-agenda)
-    (define-key agenda-map (kbd "t") 'goto-todo)
+    (define-key agenda-map (kbd "C-t") 'goto-todo)
     (global-set-key (kbd "C-a") agenda-map))
 
 ;(goto-todo) (lambda () "Go to TODO file" (interactive) (find-file "~/org/Cooode.org")))
@@ -320,7 +323,10 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    '("7a7b1d475b42c1a0b61f3b1d1225dd249ffa1abb1b7f726aec59ac7ca3bf4dae" "d47f868fd34613bd1fc11721fe055f26fd163426a299d45ce69bef1f109e1e71" "fb3edc31220f6ffa986dbbb184c45c7684e0c4e04fbd6ea44a33cc52291c3894" "82e799bb68717f8cafe76263134e32e1e142add3563e49099927d517a39478d0" default))
+ '(helm-minibuffer-history-key "M-p")
  '(menu-bar-mode nil)
+ '(org-agenda-files
+   '("~/RoamNotes/20220114211727-org_mode_beautifying.org" "/home/threegigs/test.org" "/home/threegigs/org/Calc1_Optimization.org" "/home/threegigs/org/Cooode.org" "/home/threegigs/RoamNotes/20220113235130-org_mode.org" "/home/threegigs/RoamNotes/20220114002348-org_roam_fleeting_notes.org" "/home/threegigs/RoamNotes/20220114012627-zettelkasten_method.org" "/home/threegigs/RoamNotes/20220114021724-emacs.org" "/home/threegigs/RoamNotes/20220114021859-elisp.org" "/home/threegigs/RoamNotes/20220114022220-elisp_quoting.org" "/home/threegigs/RoamNotes/20220114023410-elisp_anonymous_functions.org" "/home/threegigs/RoamNotes/20220114024120-org_roam_capture_templates.org" "/home/threegigs/RoamNotes/20220114032034-org_mode_agenda.org" "/home/threegigs/RoamNotes/20220114210048-org_checkboxes.org") nil nil "Customized with use-package org")
  '(package-selected-packages '(gigs-splash evil-org use-package ##))
  '(tool-bar-mode nil))
 (custom-set-faces
