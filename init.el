@@ -90,6 +90,7 @@
           treemacs-no-png-images                   nil
           treemacs-no-delete-other-windows         t
           treemacs-project-follow-cleanup          nil
+          treemacs-no-delete-other-windows         t
           treemacs-persist-file                    (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
           treemacs-position                        'left
           treemacs-read-string-input               'from-child-frame
@@ -218,13 +219,47 @@
   (require 'dap-cpptools))
 (use-package org
   :straight t
+  :hook (org-mode . org-indent-mode)
   :custom
   (org-agenda-files '("~/org" "~/RoamNotes"))
   (org-todo-keywords
    '((sequence "TODO(t)" "IN-PROGRESS(p)" "WAITING(w)" "|" "DONE(d)" "CANCELED(c)" "STALLED(s)")))
   (org-log-done `time)
   (org-enforce-todo-dependencies t)
-  (org-hide-emphasis-markers t))
+  (org-hide-emphasis-markers t)
+  (org-hidden-keywords '(title))
+  :config
+  (font-lock-add-keywords
+   'org-mode
+   ; Hide all org stars
+   '(("^\\*+ "
+      (0
+       (prog1 nil
+         (put-text-property (match-beginning 0) (match-end 0)
+                            'face (list :foreground
+                                        (face-attribute
+                                         'default :background))))))))
+  (let* ((variable-tuple
+        (cond ((x-list-fonts "ETBembo") '(:font "ETBembo"))
+              ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
+              ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
+              ((x-list-fonts "Verdana")         '(:font "Verdana"))
+              ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
+              (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
+       (base-font-color     (face-foreground 'default nil 'default))
+       (headline           `(:inherit default :weight bold :foreground ,base-font-color)))
+  (custom-theme-set-faces
+   'user
+   `(org-level-8 ((t (,@headline ,@variable-tuple))))
+   `(org-level-7 ((t (,@headline ,@variable-tuple))))
+   `(org-level-6 ((t (,@headline ,@variable-tuple))))
+   `(org-level-5 ((t (,@headline ,@variable-tuple))))
+   `(org-level-4 ((t (,@headline ,@variable-tuple))))
+   `(org-level-3 ((t (,@headline ,@variable-tuple :height 1.05))))
+   `(org-level-2 ((t (,@headline ,@variable-tuple :height 1.10))))
+   `(org-level-1 ((t (,@headline ,@variable-tuple :height 1.25))))
+   `(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil))))
+   `(org-document-info  ((t (,@headline ,@variable-tuple :height 1.30 :underline nil)))))))
 (use-package evil-org
   :straight t
   :after org
