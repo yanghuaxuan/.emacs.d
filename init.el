@@ -19,7 +19,7 @@
 			        (eval-print-last-sexp)))
       (load bootstrap-file nil 'nomessage))
 
-					; Enable use-package
+; Enable use-package
 ; Use-package config
 (eval-when-compile
   (straight-use-package 'use-package))
@@ -178,13 +178,6 @@
   :hook (typescript-mode . lsp-deferred)
   :config
   (setq typescript-indent-level 4))
-(use-package evil-org
-  :straight t
-  :after org
-  :hook (org-mode . (lambda () evil-org-mode))
-  :config
-  (require 'evil-org-agenda)
-  (evil-org-agenda-set-keys))
 (use-package origami
   :straight t)
 ;(use-package nano-modeline
@@ -202,8 +195,7 @@
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
 (use-package helm
   :straight t
-  :config
-  (helm-autoresize-mode 1)
+  :config (helm-autoresize-mode 1)
   (helm-mode)
   (setq
    helm-split-window-inside-p t
@@ -224,6 +216,19 @@
   (dap-mode)
   (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
   (require 'dap-cpptools))
+(use-package org
+  :straight t
+  :custom
+  (org-agenda-files '("~/org"))
+  (org-todo-keywords
+   '((sequence "TODO" "IN-PROGRESS" "WAITING" "|" "DONE" "CANCELED"))))
+(use-package evil-org
+  :straight t
+  :after org
+  :hook (org-mode . (lambda () evil-org-mode))
+  :config
+  (require 'evil-org-agenda)
+  (evil-org-agenda-set-keys))
 (use-package org-roam
   :straight t
   :custom
@@ -233,7 +238,7 @@
    '(("d" "default" entry
       "* %?"
       :target (file+head "%<%Y-%m-%d>.org"
-                         "#+title: %<%Y-%m-%d>\n")))))
+                         "#+title: %<%Y-%m-%d>\n"))))
   (org-roam-complete-everywhere t)
   :bind (("C-c n l" . org-roam-buffer-toggle)
          ("C-c n f" . org-roam-node-find)
@@ -286,9 +291,25 @@
 (global-auto-revert-mode t)
 (setq dired-auto-revert-buffer t)
 (setq-default indent-tabs-mode nil)
+
+; Shortcuts for common uses
+(defun goto-todo () "Goto ~/org/Cooode.org" (interactive)
+       (split-window-horizontally)
+       (find-file "~/org/Cooode.org"))
+(defun goto-config () "Goto Emacs config" (interactive)
+       (split-window-below)
+       (find-file (concat user-emacs-directory "init.el")))
+
+(global-set-key (kbd "C-c C-c") 'goto-config)
+
 ; Bind completions at point
 (global-set-key (kbd "C-M-i") 'completion-at-point)
+(let* ((agenda-map (make-sparse-keymap)))
+    (define-key agenda-map (kbd "a") 'org-agenda)
+    (define-key agenda-map (kbd "t") 'goto-todo)
+    (global-set-key (kbd "C-a") agenda-map))
 
+;(goto-todo) (lambda () "Go to TODO file" (interactive) (find-file "~/org/Cooode.org")))
 
 ;; SECTION: SETTINGS FROM EMACS CUSTOMIZE
 (put 'upcase-region 'disabled nil)
