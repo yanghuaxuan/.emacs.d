@@ -1,3 +1,4 @@
+(setq debug-on-error t)
 ;; The default is 800 kilobytes.  Measured in bytes.
 (setq gc-cons-threshold (* 50 1000 1000))
 
@@ -187,8 +188,8 @@
 ;  (nano-modeline))
 (use-package flycheck
   :straight t
-  :init (global-flycheck-mode)
-  :config (add-hook 'after-init-hook' #'global-flycheck-mode))
+  :init (global-flycheck-mode))
+;:config (add-hook 'after-init-hook' 'global-flycheck-mode))
 (use-package projectile
   :straight t
   :config
@@ -219,7 +220,9 @@
   (require 'dap-cpptools))
 (use-package org
   :straight t
-  :hook (org-mode . org-indent-mode)
+  :hook
+  (org-mode . org-indent-mode)
+  (org-mode . variable-pitch-mode)
   :custom
   (org-agenda-files '("~/org" "~/RoamNotes"))
   (org-todo-keywords
@@ -227,6 +230,7 @@
   (org-log-done `time)
   (org-enforce-todo-dependencies t)
   (org-hide-emphasis-markers t)
+  (org-src-fontify-natively t)
   (org-hidden-keywords '(title))
   :config
   (font-lock-add-keywords
@@ -248,22 +252,27 @@
               (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
        (base-font-color     (face-foreground 'default nil 'default))
        (headline           `(:inherit default :weight bold :foreground ,base-font-color)))
-  (custom-theme-set-faces
-   'user
-   `(org-level-8 ((t (,@headline ,@variable-tuple))))
-   `(org-level-7 ((t (,@headline ,@variable-tuple))))
-   `(org-level-6 ((t (,@headline ,@variable-tuple))))
-   `(org-level-5 ((t (,@headline ,@variable-tuple))))
-   `(org-level-4 ((t (,@headline ,@variable-tuple))))
-   `(org-level-3 ((t (,@headline ,@variable-tuple :height 1.05))))
-   `(org-level-2 ((t (,@headline ,@variable-tuple :height 1.10))))
-   `(org-level-1 ((t (,@headline ,@variable-tuple :height 1.25))))
-   `(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil))))
-   `(org-document-info  ((t (,@headline ,@variable-tuple :height 1.30 :underline nil)))))))
+    (custom-theme-set-faces
+    'user
+    `(variable-pitch ((t (,@variable-tuple :height 100 :weight thin))))
+    `(fixed-pitch ((t (:family "JetBrains Mono" :heigth 90))))
+    `(org-level-8 ((t (,@headline ,@variable-tuple))))
+    `(org-level-7 ((t (,@headline ,@variable-tuple))))
+    `(org-level-6 ((t (,@headline ,@variable-tuple))))
+    `(org-level-5 ((t (,@headline ,@variable-tuple))))
+    `(org-level-4 ((t (,@headline ,@variable-tuple))))
+    `(org-level-3 ((t (,@headline ,@variable-tuple :height 1.20))))
+    `(org-level-2 ((t (,@headline ,@variable-tuple :height 1.30))))
+    `(org-level-1 ((t (,@headline ,@variable-tuple :height 1.40))))
+    `(org-block ((t (:weight normal :inherit (shadow fixed-pitch)))))
+    `(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil))))
+    `(org-document-info  ((t (,@headline ,@variable-tuple :height 1.30 :underline nil)))))))
 (use-package evil-org
   :straight t
   :after org
-  :hook (org-mode . (lambda () evil-org-mode))
+  :hook
+  (org-mode . (lambda () evil-org-mode))
+  (org-mode . (lambda () (setq display-line-numbers-type nil)))
   :config
   (require 'evil-org-agenda)
   (evil-org-agenda-set-keys))
@@ -313,13 +322,14 @@
 ; Enable CUA (Global copy-paste)
 (cua-mode)
 ; Relative line numbers
+;(global-display-line-numbers-mode)
 (setq display-line-numbers-type 'relative)
-(global-display-line-numbers-mode 1)
-; Set startup screen
-(setq initial-buffer-choice (lambda () get-buffer-create "*dashboard*"))
-; Disable auto-save
-(setq auto-save-default nil)
-;; Write backups to ~/.emacs.d/backup/
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+; Enable auto-save
+;(auto-save-mode)
+;(setq auto-save-file-name-transforms
+;      `((".*" "~/autosave" t)))
+; Write backups to ~/.emacs.d/backup/
 (setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
       backup-by-copying      t  ; Don't de-link hard links
       version-control        t  ; Use version numbers on backups
@@ -328,6 +338,7 @@
       kept-old-versions      5) ; and how many of the old
 (global-auto-revert-mode t)
 (setq dired-auto-revert-buffer t)
+; Use spaces
 (setq-default indent-tabs-mode nil)
 
 ; Shortcuts for common uses
@@ -338,16 +349,14 @@
        (split-window-below)
        (find-file (concat user-emacs-directory "init.el")))
 
+; Shortcut to go to config
 (global-set-key (kbd "C-c c") 'goto-config)
-
 ; Bind completions at point
 (global-set-key (kbd "C-M-i") 'completion-at-point)
 (let* ((agenda-map (make-sparse-keymap)))
     (define-key agenda-map (kbd "C-a") 'org-agenda)
     (define-key agenda-map (kbd "C-t") 'goto-todo)
     (global-set-key (kbd "C-a") agenda-map))
-
-;(goto-todo) (lambda () "Go to TODO file" (interactive) (find-file "~/org/Cooode.org")))
 
 ;; SECTION: SETTINGS FROM EMACS CUSTOMIZE
 (put 'upcase-region 'disabled nil)
@@ -387,4 +396,3 @@
  '(nano-modeline-inactive-status-** ((t nil)))
  '(nano-modeline-inactive-status-RO ((t nil)))
  '(nano-modeline-inactive-status-RW ((t nil))))
-
