@@ -195,29 +195,65 @@
   :config
   (projectile-mode +1)
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
-(use-package helm
+(use-package ivy
   :straight t
-  :config (helm-autoresize-mode 1)
-  (helm-mode)
-  (setq
-   helm-split-window-inside-p t
-   helm-autoresize-max-height 40)
-   (global-set-key (kbd "M-x") 'helm-M-x)
-   (global-set-key (kbd "C-x b") 'helm-mini)
-   (global-set-key (kbd "C-x C-f") 'helm-find-files)
-   (global-set-key (kbd "C-h a") 'helm-apropos))
-(use-package helm-swoop
+  :config
+  (ivy-mode)
+  :custom
+  (ivy-use-virtual-buffers t)
+  (enable-recursive-minibuffers t)
+  (ivy-count-format "%d/%d "))
+(use-package counsel
   :straight t
-  :after (helm))
-(use-package helm-ag
+  :config
+  (global-set-key "\C-s" 'swiper)
+  (global-set-key (kbd "C-c C-r") 'ivy-resume)
+  (global-set-key (kbd "<f6>") 'ivy-resume)
+  (global-set-key (kbd "M-x") 'counsel-M-x)
+  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+  (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+  (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+  (global-set-key (kbd "<f1> o") 'counsel-describe-symbol)
+  (global-set-key (kbd "<f1> l") 'counsel-find-library)
+  (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+  (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+  (global-set-key (kbd "C-c k") 'counsel-ag)
+  (global-set-key (kbd "C-x l") 'counsel-locate)
+  (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+  (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history))
+(use-package marginalia
   :straight t
-  :after (helm))
+  :config
+  (marginalia-mode)
+  :bind (("M-A" . marginalia-cycle)
+         :map minibuffer-local-map
+         ("M-A" . marginalia-cycle)))
+;; Helm (Currently using Ivy)
+;;(use-package helm
+;;  :straight t
+;;  :config (helm-autoresize-mode 1)
+;;  (helm-mode)
+;;  (setq
+;;   helm-split-window-inside-p t
+;;   helm-autoresize-max-height 40)
+;;   (global-set-key (kbd "M-x") 'helm-M-x)
+;;   (global-set-key (kbd "C-x b") 'helm-mini)
+;;   (global-set-key (kbd "C-x C-f") 'helm-find-files)
+;;   (global-set-key (kbd "C-h a") 'helm-apropos))
+;;(use-package helm-swoop
+;;  :straight t
+;;  :after (helm))
+;;(use-package helm-ag
+;;  :straight t
+;;  :after (helm))
+
 (use-package dap-mode
   :straight t
   :config
   (dap-mode)
   (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
-  (require 'dap-cpptools))
+  (
+require 'dap-cpptools))
 (use-package org
   :straight t
   :hook
@@ -292,6 +328,12 @@
          ("C-c n i" . org-roam-node-insert))
   :config
   (org-roam-setup))
+(use-package zoom
+  :straight t
+  :config
+  (zoom-mode)
+  :custom
+  (zoom-size '(0.618 . 0.618)))
     
 ;; section: MISC CONFIG
 ; Most configs are part of the packages section. This is for config that I prefer would be here instead
@@ -330,6 +372,7 @@
 ;(setq auto-save-file-name-transforms
 ;      `((".*" "~/autosave" t)))
 ; Write backups to ~/.emacs.d/backup/
+(auto-save-mode nil)
 (setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
       backup-by-copying      t  ; Don't de-link hard links
       version-control        t  ; Use version numbers on backups
@@ -367,10 +410,9 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    '("7a7b1d475b42c1a0b61f3b1d1225dd249ffa1abb1b7f726aec59ac7ca3bf4dae" "d47f868fd34613bd1fc11721fe055f26fd163426a299d45ce69bef1f109e1e71" "fb3edc31220f6ffa986dbbb184c45c7684e0c4e04fbd6ea44a33cc52291c3894" "82e799bb68717f8cafe76263134e32e1e142add3563e49099927d517a39478d0" default))
- '(helm-minibuffer-history-key "M-p")
  '(menu-bar-mode nil)
  '(org-agenda-files
-   '("~/RoamNotes/20220114211727-org_mode_beautifying.org" "/home/threegigs/test.org" "/home/threegigs/org/Calc1_Optimization.org" "/home/threegigs/org/Cooode.org" "/home/threegigs/RoamNotes/20220113235130-org_mode.org" "/home/threegigs/RoamNotes/20220114002348-org_roam_fleeting_notes.org" "/home/threegigs/RoamNotes/20220114012627-zettelkasten_method.org" "/home/threegigs/RoamNotes/20220114021724-emacs.org" "/home/threegigs/RoamNotes/20220114021859-elisp.org" "/home/threegigs/RoamNotes/20220114022220-elisp_quoting.org" "/home/threegigs/RoamNotes/20220114023410-elisp_anonymous_functions.org" "/home/threegigs/RoamNotes/20220114024120-org_roam_capture_templates.org" "/home/threegigs/RoamNotes/20220114032034-org_mode_agenda.org" "/home/threegigs/RoamNotes/20220114210048-org_checkboxes.org") nil nil "Customized with use-package org")
+   '() nil nil "Customized with use-package org")
  '(package-selected-packages '(gigs-splash evil-org use-package ##))
  '(tool-bar-mode nil))
 (custom-set-faces
