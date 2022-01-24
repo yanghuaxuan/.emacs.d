@@ -334,6 +334,21 @@ require 'dap-cpptools))
   (zoom-mode)
   :custom
   (zoom-size '(0.618 . 0.618)))
+(use-package dashboard
+  :straight t
+  :custom
+  (dashboard-banner-logo-title "GNU Emacs!")
+  (dashboard-startup-banner 'logo)
+  (dashboard-center-content t)
+  (dashboard-set-heading-icons t)
+  (dashboard-set-file-icons t)
+  (dashboard-items '((agenda . 5)
+                     (recents . 5)
+                     (bookmarks . 5)
+                     (projects . 5)
+                     (registers . 5)))
+  :config
+  (dashboard-setup-startup-hook))
     
 ;; section: MISC CONFIG
 ; Most configs are part of the packages section. This is for config that I prefer would be here instead
@@ -367,11 +382,9 @@ require 'dap-cpptools))
 ;(global-display-line-numbers-mode)
 (setq display-line-numbers-type 'relative)
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
-; Enable auto-save
-;(auto-save-mode)
-;(setq auto-save-file-name-transforms
-;      `((".*" "~/autosave" t)))
-; Write backups to ~/.emacs.d/backup/
+; Disable automatic creation of backup files
+(setq make-backup-files nil)
+(setq auto-save-default nil)
 
 (setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
       backup-by-copying      t  ; Don't de-link hard links
@@ -401,6 +414,9 @@ require 'dap-cpptools))
     (define-key agenda-map (kbd "C-t") 'goto-todo)
     (global-set-key (kbd "C-a") agenda-map))
 
+; No bell
+(setq ring-bell-function 'ignore)
+
 ;; SECTION: SETTINGS FROM EMACS CUSTOMIZE
 (put 'upcase-region 'disabled nil)
 (custom-set-variables
@@ -415,26 +431,3 @@ require 'dap-cpptools))
    '() nil nil "Customized with use-package org")
  '(package-selected-packages '(gigs-splash evil-org use-package ##))
  '(tool-bar-mode nil))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(mode-line ((t nil)))
- '(mode-line-buffer-id ((t nil)))
- '(mode-line-emphasis ((t nil)))
- '(mode-line-highlight ((t nil)))
- '(nano-modeline-active ((t nil)))
- '(nano-modeline-active-name ((t nil)))
- '(nano-modeline-active-primary ((t nil)))
- '(nano-modeline-active-secondary ((t nil)))
- '(nano-modeline-active-status-** ((t nil)))
- '(nano-modeline-active-status-RO ((t (:background "dark red"))))
- '(nano-modeline-active-status-RW ((t (:background "black"))))
- '(nano-modeline-inactive ((t nil)))
- '(nano-modeline-inactive-name ((t nil)))
- '(nano-modeline-inactive-primary ((t nil)))
- '(nano-modeline-inactive-secondary ((t nil)))
- '(nano-modeline-inactive-status-** ((t nil)))
- '(nano-modeline-inactive-status-RO ((t nil)))
- '(nano-modeline-inactive-status-RW ((t nil))))
