@@ -334,6 +334,7 @@ require 'dap-cpptools))
   (zoom-mode)
   :custom
   (zoom-size '(0.618 . 0.618)))
+
 (use-package dashboard
   :straight t
   :custom
@@ -405,8 +406,6 @@ require 'dap-cpptools))
        (split-window-below)
        (find-file (concat user-emacs-directory "init.el")))
 
-; Shortcut to go to config
-(global-set-key (kbd "C-c c") 'goto-config)
 ; Bind completions at point
 (global-set-key (kbd "C-M-i") 'completion-at-point)
 (let* ((agenda-map (make-sparse-keymap)))
