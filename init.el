@@ -372,7 +372,7 @@ require 'dap-cpptools))
 ;(setq auto-save-file-name-transforms
 ;      `((".*" "~/autosave" t)))
 ; Write backups to ~/.emacs.d/backup/
-(auto-save-mode nil)
+
 (setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
       backup-by-copying      t  ; Don't de-link hard links
       version-control        t  ; Use version numbers on backups

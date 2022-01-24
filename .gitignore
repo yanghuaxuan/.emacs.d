@@ -16,5 +16,5 @@ transient/
 /.org-id-locations
 /org-roam.db
 /eshell/
-/session.105b91283297fd2238164216159275443600000016320085
-/session.10a3210805e5de6eac164225246195792800000019900097
+/session*
+*dap*
