@@ -1,12 +1,17 @@
-(setq debug-on-error t)
-;; The default is 800 kilobytes.  Measured in bytes.
-(setq gc-cons-threshold (* 50 1000 1000))
+;;; init.el --- My heckin based init file
+;; Author: 3Gigs <yanghuaxuan@gmail.com>
 
-(setq warning-suppress-types '('(el)))
+;;; Code:
 
+;;;; SECTION: Startup
+
+(setq byte-compile-warnings '(cl-functions))
 (require 'cl-lib)
-;; SECTION: PACKAGES
-;; use straight.el
+; The default is 800 kilobytes.  Measured in bytes.
+(setq gc-cons-threshold (* 50 1000 1000))
+(setq debug-on-error t)
+(setq package-enable-at-startup nil)
+;; Install straight.el
 (defvar bootstrap-version)
 (let ((bootstrap-file
 	       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -19,11 +24,12 @@
 		          (goto-char (point-max))
 			        (eval-print-last-sexp)))
       (load bootstrap-file nil 'nomessage))
-
-; Enable use-package
-; Use-package config
+;; Install use-package
 (eval-when-compile
   (straight-use-package 'use-package))
+
+;;;; SECTION: Packages
+
 (use-package evil
   :straight t
   :init
@@ -44,7 +50,8 @@
   :straight t
   :config
   (setq doom-themes-enable-bold t
-	doom-themes-enable-italic t))
+	doom-themes-enable-italic t)
+  (load-theme 'doom-city-lights t))
 (use-package doom-modeline
   :straight t
   :config
@@ -96,8 +103,7 @@
           treemacs-position                        'left
           treemacs-read-string-input               'from-child-frame
           treemacs-recenter-distance               0.1
-          treemacs-recenter-after-file-follow      nil
-          treemacs-recenter-after-tag-follow       nil
+          treemacs-recenter-after-file-follow      nil treemacs-recenter-after-tag-follow       nil
           treemacs-recenter-after-project-jump     'always
           treemacs-recenter-after-project-expand   'on-distance
           treemacs-litter-directories              '("/node_modules" "/.venv" "/.cask")
@@ -155,8 +161,26 @@
 (use-package treemacs-magit
   :straight t
   :after (treemacs magit))
-(use-package hydra)
+(use-package hydra
   :straight t
+  :config
+  ; Summon the hydra
+  (global-set-key
+  (kbd "C-M-W")
+  (defhydra hydra-window () "Move around windows with hydra and vi binds"
+  ("h" windmove-left)
+  ("l" windmove-right)
+  ("j" windmove-down)
+  ("k" windmove-up)
+  ("q" nil "cancel")))
+  (global-set-key
+  (kbd "C-M-R")
+  (defhydra hydra-resize () "Resize window"
+  ("h" shrink-window-horizontally)
+  ("l" enlarge-window-horizontally)
+  ("j" shrink-window)
+  ("k" enlarge-window)
+  ("q" nil "cancel"))))
 (use-package company
   :straight t
   :config
@@ -174,12 +198,6 @@
 (use-package lsp-treemacs
   :straight t
   :commands lsp-treemacs-errors-list)
-(use-package typescript-mode
-  :straight t
-  :mode "\\.ts\\'"
-  :hook (typescript-mode . lsp-deferred)
-  :config
-  (setq typescript-indent-level 4))
 (use-package origami
   :straight t)
 ;(use-package nano-modeline
@@ -223,7 +241,7 @@
   (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history))
 (use-package marginalia
   :straight t
-  :config
+  :init
   (marginalia-mode)
   :bind (("M-A" . marginalia-cycle)
          :map minibuffer-local-map
@@ -343,40 +361,20 @@ require 'dap-cpptools))
   (dashboard-center-content t)
   (dashboard-set-heading-icons t)
   (dashboard-set-file-icons t)
-  (dashboard-items '((agenda . 5)
-                     (recents . 5)
+  (dashboard-items '((recents . 5)
                      (bookmarks . 5)
                      (projects . 5)
                      (registers . 5)))
   :config
   (dashboard-setup-startup-hook))
     
-;; section: MISC CONFIG
-; Most configs are part of the packages section. This is for config that I prefer would be here instead
-; Load theme
-(load-theme 'doom-city-lights t)
+;;;; SECTION: Misc. Config
+
+;; For config that doesn't belong to any packages
 ; Disable scroll bar
 (scroll-bar-mode -1)
 ; Set font
 (add-to-list 'default-frame-alist '(font . "JetBrains Mono"))
-;; Prettify? TODO
-; Summon the hydra
-(global-set-key
- (kbd "C-M-W")
- (defhydra hydra-window () "Move around windows with hydra and vi binds"
-   ("h" windmove-left)
-   ("l" windmove-right)
-   ("j" windmove-down)
-   ("k" windmove-up)
-   ("q" nil "cancel")))
-(global-set-key
- (kbd "C-M-R")
- (defhydra hydra-resize () "Resize window"
-   ("h" shrink-window-horizontally)
-   ("l" enlarge-window-horizontally)
-   ("j" shrink-window)
-   ("k" enlarge-window)
-   ("q" nil "cancel")))
 ; Enable CUA (Global copy-paste)
 (cua-mode)
 ; Relative line numbers
@@ -398,14 +396,6 @@ require 'dap-cpptools))
 ; Use spaces
 (setq-default indent-tabs-mode nil)
 
-; Shortcuts for common uses
-(defun goto-todo () "Goto ~/org/Cooode.org" (interactive)
-       (split-window-horizontally)
-       (find-file "~/org/Cooode.org"))
-(defun goto-config () "Goto Emacs config" (interactive)
-       (split-window-below)
-       (find-file (concat user-emacs-directory "init.el")))
-
 ; Bind completions at point
 (global-set-key (kbd "C-M-i") 'completion-at-point)
 (let* ((agenda-map (make-sparse-keymap)))
@@ -416,17 +406,30 @@ require 'dap-cpptools))
 ; No bell
 (setq ring-bell-function 'ignore)
 
-;; SECTION: SETTINGS FROM EMACS CUSTOMIZE
-(put 'upcase-region 'disabled nil)
+; Set variables
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   '("7a7b1d475b42c1a0b61f3b1d1225dd249ffa1abb1b7f726aec59ac7ca3bf4dae" "d47f868fd34613bd1fc11721fe055f26fd163426a299d45ce69bef1f109e1e71" "fb3edc31220f6ffa986dbbb184c45c7684e0c4e04fbd6ea44a33cc52291c3894" "82e799bb68717f8cafe76263134e32e1e142add3563e49099927d517a39478d0" default))
  '(menu-bar-mode nil)
- '(org-agenda-files
-   '() nil nil "Customized with use-package org")
- '(package-selected-packages '(gigs-splash evil-org use-package ##))
+ '(org-agenda-files nil nil nil "Customized with use-package org")
  '(tool-bar-mode nil))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(fixed-pitch ((t (:family "JetBrains Mono" :heigth 90))))
+ '(org-block ((t (:weight normal :inherit (shadow fixed-pitch)))))
+ '(org-document-info ((t (:inherit default :weight bold :foreground "#A0B3C5" :font "Lucida Grande" :height 1.3 :underline nil))))
+ '(org-document-title ((t (:inherit default :weight bold :foreground "#A0B3C5" :font "Lucida Grande" :height 2.0 :underline nil))))
+ '(org-level-1 ((t (:inherit default :weight bold :foreground "#A0B3C5" :font "Lucida Grande" :height 1.4))))
+ '(org-level-2 ((t (:inherit default :weight bold :foreground "#A0B3C5" :font "Lucida Grande" :height 1.3))))
+ '(org-level-3 ((t (:inherit default :weight bold :foreground "#A0B3C5" :font "Lucida Grande" :height 1.2))))
+ '(org-level-4 ((t (:inherit default :weight bold :foreground "#A0B3C5" :font "Lucida Grande"))))
+ '(org-level-5 ((t (:inherit default :weight bold :foreground "#A0B3C5" :font "Lucida Grande"))))
+ '(org-level-6 ((t (:inherit default :weight bold :foreground "#A0B3C5" :font "Lucida Grande"))))
+ '(org-level-7 ((t (:inherit default :weight bold :foreground "#A0B3C5" :font "Lucida Grande"))))
+ '(org-level-8 ((t (:inherit default :weight bold :foreground "#A0B3C5" :font "Lucida Grande"))))
+ '(variable-pitch ((t (:font "Lucida Grande" :height 100 :weight thin)))))
