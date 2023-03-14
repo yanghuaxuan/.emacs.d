@@ -5,41 +5,50 @@
 
 ;;;; SECTION: Startup
 
-(setq byte-compile-warnings '(cl-functions))
-(require 'cl-lib)
-; The default is 800 kilobytes.  Measured in bytes.
-(setq gc-cons-threshold (* 50 1000 1000))
-(setq debug-on-error t)
+(setq byte-compile-warnings '(cl-functions)) (require 'cl-lib)
+; The default is 800 kilobytes.  Measured in bytes. (setq gc-cons-threshold (* 50 1000 1000)) (setq debug-on-error t)
 (setq package-enable-at-startup nil)
-;; Install straight.el
+; Install straight.el
+(setq straight-recipes-gnu-elpa-use-mirror t)
 (defvar bootstrap-version)
 (let ((bootstrap-file
-	       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-            (bootstrap-version 5))
-    (unless (file-exists-p bootstrap-file)
-          (with-current-buffer
-	            (url-retrieve-synchronously
-		               "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-			                'silent 'inhibit-cookies)
-		          (goto-char (point-max))
-			        (eval-print-last-sexp)))
-      (load bootstrap-file nil 'nomessage))
+      (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+     (bootstrap-version 5))
+     (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+	(url-retrieve-synchronously
+          "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+          'silent 'inhibit-cookies)
+          (goto-char (point-max))
+          (eval-print-last-sexp)))
+     (load bootstrap-file nil 'nomessage))
 ;; Install use-package
 (eval-when-compile
   (straight-use-package 'use-package))
 
+;;;; END SECTION: Startup
+
 ;;;; SECTION: Packages
 
+(use-package auto-package-update
+   :straight t
+   :config
+   (setq auto-package-update-delete-old-versions t
+         auto-package-update-interval 4)
+   (auto-package-update-maybe))
 (use-package evil
   :straight t
   :init
   (setq evil-want-integration t)
   (setq evil-want-keybinding nil)
-  :config (evil-mode 1))
+  (setq evil-want-C-u-scroll t)
+  :config
+  (evil-mode 1))
 (use-package evil-collection
   :straight t
   :after evil
   :config
+  (evil-set-leader 'normal (kbd "SPC"))
   (evil-collection-init))
 (use-package which-key
   :straight t
@@ -51,11 +60,12 @@
   :config
   (setq doom-themes-enable-bold t
 	doom-themes-enable-italic t)
-  (load-theme 'doom-city-lights t))
+  (load-theme 'doom-gruvbox t))
 (use-package doom-modeline
   :straight t
   :config
   (setq doom-modeline-height 35)
+  :init
   (doom-modeline-mode 1))
 (use-package all-the-icons
   :straight t
@@ -183,10 +193,20 @@
   ("q" nil "cancel"))))
 (use-package company
   :straight t
+  :init
+  (add-hook 'after-init-hook 'global-company-mode)
   :config
   (company-mode))
 (use-package lsp-mode
   :straight t
+  :config
+  (lsp-register-custom-settings
+   '(("pyls.plugins.pyls_mypy.enabled" t t)
+     ("pyls.plugins.pyls_mypy.live_mode" nil t)
+     ("pyls.plugins.pyls_black.enabled" t t)
+  (with-eval-after-load 'lsp-mode
+  ;; :global/:workspace/:file
+  (setq lsp-modeline-diagnostics-scope :workspace))  ("pyls.plugins.pyls_isort.enabled" t t)))
   :init
   (setq lsp-keymap-prefix "C-c l")
   :hook
@@ -194,11 +214,17 @@
   :commands lsp)
 (use-package lsp-ui
   :straight t
+  :after flycheck
+  :custom
+  (lsp-ui-flycheck-enable t)
   :commands lsp-ui-mode)
+(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
 (use-package lsp-treemacs
   :straight t
   :commands lsp-treemacs-errors-list)
 (use-package origami
+  :config
+  (global-origami-mode 1)
   :straight t)
 ;(use-package nano-modeline
 ;  :straight t
@@ -206,8 +232,8 @@
 ;  (nano-modeline))
 (use-package flycheck
   :straight t
-  :init (global-flycheck-mode))
-;:config (add-hook 'after-init-hook' 'global-flycheck-mode))
+ :init (global-flycheck-mode))
+;  :config (add-hook 'after-init-hook' 'global-flycheck-mode))
 (use-package projectile
   :straight t
   :config
@@ -228,7 +254,7 @@
   (global-set-key (kbd "C-c C-r") 'ivy-resume)
   (global-set-key (kbd "<f6>") 'ivy-resume)
   (global-set-key (kbd "M-x") 'counsel-M-x)
-  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+;  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
   (global-set-key (kbd "<f1> f") 'counsel-describe-function)
   (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
   (global-set-key (kbd "<f1> o") 'counsel-describe-symbol)
@@ -270,8 +296,7 @@
   :config
   (dap-mode)
   (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
-  (
-require 'dap-cpptools))
+  (require 'dap-cpptools))
 (use-package org
   :straight t
   :hook
@@ -352,7 +377,6 @@ require 'dap-cpptools))
   (zoom-mode)
   :custom
   (zoom-size '(0.618 . 0.618)))
-
 (use-package dashboard
   :straight t
   :custom
@@ -367,12 +391,33 @@ require 'dap-cpptools))
                      (registers . 5)))
   :config
   (dashboard-setup-startup-hook))
+(use-package orderless
+  :straight t
+  :custom
+  (orderless-matching-styles
+    '(orderless-literal
+    orderless-prefixes
+    orderless-initialism
+    orderless-regexp
+    ;; orderless-flex                       ; Basically fuzzy finding
+    ;; orderless-strict-leading-initialism
+    ;; orderless-strict-initialism
+    ;; orderless-strict-full-initialism
+    ;; orderless-without-literal          ; Recommended for dispatches instead
+    ))
+  (completion-styles '(orderless))      ; Use orderless
+  (completion-category-defaults nil)    ; I want to be in control!
+  (completion-category-overrides
+   '((file (styles basic-remote ; For `tramp' hostname completion with `vertico'
+                   orderless)))))
     
+;;;; END SECTION: Packages
+
 ;;;; SECTION: Misc. Config
 
 ;; For config that doesn't belong to any packages
 ; Disable scroll bar
-(scroll-bar-mode -1)
+;(scroll-bar-mode -1)
 ; Set font
 (add-to-list 'default-frame-alist '(font . "JetBrains Mono"))
 ; Enable CUA (Global copy-paste)
@@ -381,6 +426,7 @@ require 'dap-cpptools))
 ;(global-display-line-numbers-mode)
 (setq display-line-numbers-type 'relative)
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+
 ; Disable automatic creation of backup files
 (setq make-backup-files nil)
 (setq auto-save-default nil)
@@ -411,3 +457,14 @@ require 'dap-cpptools))
  '(menu-bar-mode nil)
  '(org-agenda-files nil nil nil "Customized with use-package org")
  '(tool-bar-mode nil))
+
+; If Macos, set command to C
+(if (eq system-type 'darwin)
+    (setq mac-command-modifier 'control))
+
+(setq tramp-verbose 10)
+
+(global-auto-revert-mode 1)
+
+
+;;;; END SECTION: Misc. Config
