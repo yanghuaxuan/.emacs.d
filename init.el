@@ -197,31 +197,35 @@
   (add-hook 'after-init-hook 'global-company-mode)
   :config
   (company-mode))
-(use-package lsp-mode
+;(use-package lsp-mode
+;  :straight t
+;  :config
+;  (lsp-register-custom-settings
+;   '(("pyls.plugins.pyls_mypy.enabled" t t)
+;     ("pyls.plugins.pyls_mypy.live_mode" nil t)
+;     ("pyls.plugins.pyls_black.enabled" t t)
+;  (with-eval-after-load 'lsp-mode
+;  ;; :global/:workspace/:file
+;  (setq lsp-modeline-diagnostics-scope :workspace))  ("pyls.plugins.pyls_isort.enabled" t t)))
+;  :init
+;  (setq lsp-keymap-prefix "C-c l")
+;  :hook
+;  ((lsp-mode . lsp-enable-which-key-integration))
+;  :commands lsp)
+;(use-package lsp-ui
+;  :straight t
+;  :after flycheck
+;  :custom
+;  (lsp-ui-flycheck-enable t)
+;  :commands lsp-ui-mode)
+;(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+;(use-package lsp-treemacs
+;  :straight t
+;  :commands lsp-treemacs-errors-list)
+(use-package eglot
   :straight t
   :config
-  (lsp-register-custom-settings
-   '(("pyls.plugins.pyls_mypy.enabled" t t)
-     ("pyls.plugins.pyls_mypy.live_mode" nil t)
-     ("pyls.plugins.pyls_black.enabled" t t)
-  (with-eval-after-load 'lsp-mode
-  ;; :global/:workspace/:file
-  (setq lsp-modeline-diagnostics-scope :workspace))  ("pyls.plugins.pyls_isort.enabled" t t)))
-  :init
-  (setq lsp-keymap-prefix "C-c l")
-  :hook
-  ((lsp-mode . lsp-enable-which-key-integration))
-  :commands lsp)
-(use-package lsp-ui
-  :straight t
-  :after flycheck
-  :custom
-  (lsp-ui-flycheck-enable t)
-  :commands lsp-ui-mode)
-(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
-(use-package lsp-treemacs
-  :straight t
-  :commands lsp-treemacs-errors-list)
+  :hook (python-mode . eglot-ensure))
 (use-package origami
   :config
   (global-origami-mode 1)
@@ -295,7 +299,7 @@
   :straight t
   :config
   (dap-mode)
-  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
+;  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
   (require 'dap-cpptools))
 (use-package org
   :straight t
@@ -348,6 +352,8 @@
     `(org-document-info  ((t (,@headline ,@variable-tuple :height 1.30 :underline nil)))))))
 (use-package evil-org
   :straight t
+  :init
+  (setq evil-respect-visual-line-mode t)
   :after org
   :hook
   (org-mode . (lambda () evil-org-mode))
