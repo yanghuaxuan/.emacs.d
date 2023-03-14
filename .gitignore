@@ -19,3 +19,4 @@ transient/
 /session*
 *dap*
 org-persist/
+tramp
